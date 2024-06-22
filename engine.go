@@ -10,13 +10,14 @@ type Engine interface {
 	Work(ctx context.Context) error
 }
 
-func NewEngine(cfg Config, mqttClient MqttClient) Engine {
-	return &engine{cfg: cfg, mqttClient: mqttClient}
+func NewEngine(cfg Config, mqttClient MqttClient, dao SensorsDao) Engine {
+	return &engine{cfg: cfg, mqttClient: mqttClient, dao: dao}
 }
 
 type engine struct {
 	cfg        Config
 	mqttClient MqttClient
+	dao        SensorsDao
 }
 
 func (e *engine) Work(ctx context.Context) error {
@@ -35,6 +36,10 @@ func (e *engine) Work(ctx context.Context) error {
 
 	msgs, err := e.waitForMessages(responseChan)
 	log.WithField("msgs", msgs).Info("received messages")
+
+	if err := e.dao.WriteMeasures(time.Now(), msgs); err != nil {
+		return err
+	}
 
 	return nil
 }

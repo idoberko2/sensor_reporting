@@ -22,7 +22,12 @@ func main() {
 		log.WithError(err).Fatal("error initializing mqtt client")
 	}
 
-	engine := NewEngine(cfg, mqttClient)
+	sensorsDao := NewSensorsDao(cfg)
+	if err := sensorsDao.Init(); err != nil {
+		log.WithError(err).Fatal("error initializing sensors dao")
+	}
+
+	engine := NewEngine(cfg, mqttClient, sensorsDao)
 	if err := engine.Work(ctx); err != nil {
 		log.WithError(err).Fatal("error running work")
 	}
