@@ -22,6 +22,7 @@ type Config struct {
 	ClientId        string        `env:"MQTT_CLIENT_ID, default=go_sensor_reporting"`
 	Sensors         []string      `env:"SENSORS, default=bmp,dust"`
 	ResponseTimeout time.Duration `env:"RESPONSE_TIMEOUT, default=10s"`
+	DbConString     string        `env:"DATABASE_URL"`
 }
 
 func ReadConfig(ctx context.Context) (Config, error) {
