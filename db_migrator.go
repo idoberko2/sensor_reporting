@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/pkg/errors"
@@ -34,7 +35,7 @@ func (m *migrator) Migrate(cfg Config) error {
 		return err
 	}
 
-	mig, err := migrate.NewWithDatabaseInstance("file://migrations", getDbName(cfg), driver)
+	mig, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("%s%s", "file://", cfg.DbMigrationPath), getDbName(cfg), driver)
 	if err != nil {
 		return err
 	}

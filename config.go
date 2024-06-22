@@ -23,6 +23,7 @@ type Config struct {
 	Sensors         []string      `env:"SENSORS, default=bmp,dust"`
 	ResponseTimeout time.Duration `env:"RESPONSE_TIMEOUT, default=10s"`
 	DbConString     string        `env:"DATABASE_URL"`
+	DbMigrationPath string        `env:"DB_MIGRATION_PATH, default=migrations"`
 }
 
 func ReadConfig(ctx context.Context) (Config, error) {
