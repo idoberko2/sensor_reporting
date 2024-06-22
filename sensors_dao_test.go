@@ -56,14 +56,29 @@ func (suite *SensorsDaoSuite) TestWriteSensors() {
 	now := time.Now()
 	err := suite.dao.WriteMeasures(now, []MeasurePayload{
 		{36.6, "bmp"},
+		{1.12, "dust"},
 	})
 	suite.Require().NoError(err)
 
 	measures, err := suite.getAllMeasures()
 	suite.Require().NoError(err)
 
-	suite.Assert().Len(measures, 1)
-	suite.Assert().Equal(now.Unix(), measures[0].T.Unix())
-	suite.Assert().Equal("bmp", measures[0].Sensor)
-	suite.Assert().Equal(36.6, measures[0].Value)
+	suite.Assert().Len(measures, 2)
+
+	var bmp, dust measureEntry
+	for _, measure := range measures {
+		if measure.Sensor == "bmp" {
+			bmp = measure
+		} else if measure.Sensor == "dust" {
+			dust = measure
+		} else {
+			suite.Assert().Fail("unknown measure")
+		}
+	}
+
+	suite.Assert().Equal(now.Unix(), bmp.T.Unix())
+	suite.Assert().Equal(36.6, bmp.Value)
+
+	suite.Assert().Equal(now.Unix(), dust.T.Unix())
+	suite.Assert().Equal(1.12, dust.Value)
 }
